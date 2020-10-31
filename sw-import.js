@@ -68,7 +68,7 @@
 //    const text = decodeEditorText(token.get('gmnotes'),{asArray:true});
 var verboseMode = true;
 
-log("-=> Savage Worlds SWADE Import v1.0.2 <=-");
+log("-=> Savage Worlds SWADE Import v1.0.3 <=-");
 
 const decodeEditorText = (t, o) => {
    let w = t;
@@ -213,33 +213,27 @@ function AdjustMod(type, name, amount, reason){
 }
 
 function FixFighting(charID){
-
-    staticFightingAttr = findObjs({ type: 'attribute', characterid: charID, name: 'staticfighting' })[0];
-    FightingModAttr = findObjs({ type: 'attribute', characterid: charID, name: 'fightingmod' })[0];
     
+    log(charID);
+
+    staticFightingAttr = findObjs({ type: 'attribute', characterid: charID, name: 'staticFighting' })[0];
+    FightingModAttr = findObjs({ type: 'attribute', characterid: charID, name: 'Fightingmod' })[0];
+
     log(FightingModAttr);
     log(staticFightingAttr);
     
-      let AttrObj1 = createObj("attribute", {
-           name: 'fightingmod',
-           characterid: charID
-      });
-      
-       AttrObj1.setWithWorker({
+       FightingModAttr.setWithWorker({
          current: '0',
          max: ''
       });
-      
-      let AttrObj2 = createObj("attribute", {
-         name: 'staticfighting',
-         characterid: charID
-      });
-      
-      AttrObj2.setWithWorker({
+
+      staticFightingAttr.setWithWorker({
          current: 'on',
          max: ''
       });
 
+      log('Fighting Mod Fix Done.');
+      return;
 }
 
 //   AddAttribute("size",sizeNum,charID);
@@ -1395,15 +1389,20 @@ on('chat:message', function(msg) {
 
       if(typeof Skills.find(skill => skill.Name.toLowerCase() == 'fighting') !== 'undefined'){
           if(verboseMode) { log('Found Fighting!'); }
-          FixFighting(charID);
-      } 
+          
+        _.delay((d)=>{
+            sendChat('', '/w gm SW Stateblock pause to let Sheetworker catch up!');
+            log("Delayed Fix Fighing!");
+            FixFighting(charID);
+            sendChat('', '/w gm SW Statblock Import Complete');
+            sendChat('', '/w gm Created: charName = [' + charName + '] Wild Card: = [' + wildCard + ']');
+        },5000,charID);
+      } else {
+        sendChat('', '/w gm SW Statblock Import Complete');
+        sendChat('', '/w gm Created: charName = [' + charName + '] Wild Card: = [' + wildCard + ']');
+      }
 
-        
-//      var fightingMod = Skills.find(skill => skill.Name.toLowerCase() == 'fighting').Mod
-      sendChat('', '/w gm SW Statblock Import Complete');
-//      sendChat('', '/w gm FightMod: ' + fightingMod);
-      sendChat('', '/w gm Created: charName = [' + charName + '] Wild Card: = [' + wildCard + ']');
-
+        log('Async Done!');
       return;
    }
 });
