@@ -68,7 +68,7 @@
 //    const text = decodeEditorText(token.get('gmnotes'),{asArray:true});
 var verboseMode = true;
 
-log("-=> Savage Worlds SWADE Import v1.0.3 <=-");
+log("-=> Savage Worlds SWADE Import v1.0.4 <=-");
 
 const decodeEditorText = (t, o) => {
    let w = t;
@@ -387,8 +387,9 @@ function AddWeapon(Weapon, charID){
         var rshootingname       = 'Shooting';
         var rweirdsciencename   = 'Weird Science'; 
        
-       //Create Static Weapon Attributes first:
-       
+        //Create Static Weapon Attributes first:
+        
+        
         createObj("attribute", {name: "repeating_weapons_"+ Weapon.rowid +"_weaponsbonusDie",current: weaponsbonusDie,characterid: charID});
         createObj("attribute", {name: "repeating_weapons_"+ Weapon.rowid +"_weaponsbonusdmg",current: weaponsbonusdmg,characterid: charID});
         createObj("attribute", {name: "repeating_weapons_"+ Weapon.rowid +"_highlightdamage",current: highlightdamage,characterid: charID});
@@ -406,17 +407,44 @@ function AddWeapon(Weapon, charID){
         createObj("attribute", {name: "repeating_weapons_"+ Weapon.rowid +"_showweaponconfig",current: '0',characterid: charID});
         
         //Create Weapon Attributes that don't change with type:
-      
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapon',current: Weapon.Name.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_dmgnumdice',current: Weapon.DmgDieNum.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_dmgdietype',current: Weapon.DmgDieType.toString() + '!',characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_rof',current: Weapon.RoF.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_range',current: Weapon.Range.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponap',current: Weapon.AP.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponnotes',current: Weapon.Notes.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_dmgbonusnum',current: Weapon.DmgBonusNum.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponsbdt',current: Weapon.DmgBonusType.toString(),characterid: charID});
-        createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_minstrength',current: Weapon.MinStr.toString(),characterid: charID});
+        
+        if(typeof Weapon.Name != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapon',current: Weapon.Name.toString(),characterid: charID});
+        }
+        if(typeof Weapon.DmgDieNum != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_dmgnumdice',current: Weapon.DmgDieNum.toString(),characterid: charID});
+        }
+        if(typeof Weapon.DmgDieType != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_dmgdietype',current: Weapon.DmgDieType.toString() + '!',characterid: charID});
+        }
+        if(typeof Weapon.RoF != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_rof',current: Weapon.RoF.toString(),characterid: charID});
+        }
+        if(typeof Weapon.Range != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_range',current: Weapon.Range.toString(),characterid: charID});
+        }
+        log("Weapon Here2!");
+        if(typeof Weapon.AP != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponap',current: Weapon.AP.toString(),characterid: charID});
+        }
+        log("Weapon Here3!");
+        if(typeof Weapon.Notes != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponnotes',current: Weapon.Notes.toString(),characterid: charID});
+        }
+        log("Weapon Here4!");
+        if(typeof Weapon.DmgBonusNum != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_dmgbonusnum',current: Weapon.DmgBonusNum.toString(),characterid: charID});
+        }
+        log("Weapon Here5!");
+        if(typeof Weapon.DmgBonusType != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponsbdt',current: Weapon.DmgBonusType.toString(),characterid: charID});
+        }
+        log("Weapon Here6!");
+        if(typeof Weapon.MinStr != 'undefined') {
+            createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_minstrength',current: Weapon.MinStr.toString(),characterid: charID});
+        }
+        log("Weapon Here7!");
+        
 
         if(Weapon.MaxShots > 0 || Weapon.Shots > 0){
            createObj('attribute', {
@@ -426,27 +454,40 @@ function AddWeapon(Weapon, charID){
                characterid: charID
            }); 
         }
-
+        log("Weapon Here8!");
         //(damageatt(blank if na)+dmgnumdice+dmgdietype+dmgbonusnum)
         
         
         switch( Weapon.Type.toLowerCase() ){
             case 'melee':
+                log("Weapon Here9!");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_damageatt',current: 'strength' ,characterid: charID});
+                log("Weapon Melee1");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponskill',current: 'fighting' ,characterid: charID});
+                log("Weapon Melee2");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapondamage',current: 'Str'+Weapon.DmgDieNum+Weapon.DmgDieType+'+'+Weapon.DmgBonusNum ,characterid: charID});
+                log("Weapon Melee3");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapondmg',current:'@{strength_rank}+'+Weapon.DmgDieNum+Weapon.DmgDieType+'+'+Weapon.DmgBonusNum ,characterid: charID});
+                log("Weapon Melee4");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_skillNDamage',current: '@{whisperweapon} &{template:roll} {{trait=@{fightingname}}} {{source=@{weapon}}} @{rolltFighting} @{unshakeTemplate} {{button=y}} {{ReRoll=^{reroll}(~repeating_weapons_tWeapon) }} {{DmgRoll=^{roll-damage}(~repeating_weapons_dmg) }} @{setmodsenc} @{showtraitmods} @{multiattack}' ,characterid: charID});
-           
+                log("Weapon Melee5");
                 break;
             case 'ranged':
+                log("Weapon Here10!");
+                
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'damageatt',current: 'na' ,characterid: charID});
+                log("Weapon Ranged1");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponskill',current: 'shooting' ,characterid: charID});
+                log("Weapon Ranged2");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapondamage',current: Weapon.DmgDieNum+Weapon.DmgDieType+'+'+Weapon.DmgBonusNum ,characterid: charID});
+                log("Weapon Ranged3");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapondmg',current: Weapon.DmgDieNum+Weapon.DmgDieType+'+'+Weapon.DmgBonusNum ,characterid: charID});
+                log("Weapon Ranged4");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_skillNDamage',current: '@{whisperweapon} &{template:roll} {{trait=@{shootingname}}} {{source=@{weapon}}} @{rolltShooting} @{unshakeTemplate} {{button=y}} {{ReRoll=^{reroll}(~repeating_weapons_tWeapon) }} {{DmgRoll=^{roll-damage}(~repeating_weapons_dmg) }} @{setmodsenc} @{showtraitmods} @{multiattack}' ,characterid: charID});
+                log("Weapon Ranged5");
                 break;
             case 'thrown':
+                log("Weapon Here11!");
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_damageatt',current: 'na' ,characterid: charID});
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weaponskill',current: 'athletics' ,characterid: charID});
                 createObj('attribute', {name: 'repeating_weapons_'+ Weapon.rowid +'_weapondamage',current: Weapon.DmgDieNum+Weapon.DmgDieType+'+'+Weapon.DmgBonusNum ,characterid: charID});
@@ -458,7 +499,7 @@ function AddWeapon(Weapon, charID){
                 log("Bad Weapon Type!!!!");
                 break;
         }
-        
+        log("Weapon Here12!");
 
       if (verboseMode) {
          log("Weapon: Name = " + Weapon.Name + ", id: " + Weapon.rowid);
@@ -656,11 +697,11 @@ on('chat:message', function(msg) {
       sendChat("", "Import Started!");
       
       // Make sure Variables are clear
-      var Attributes = [];
-      var Skills = [];
-      var Hindrances = [];
-      var Edges = [];
-      var Weapons = [];
+      Attributes.length = 0;
+      Skills.length = 0;
+      Hindrances.length = 0;
+      Edges.length = 0;
+      Weapons.length = 0;
       
       var paceMod = 0;
       var paceModText = '';
@@ -766,9 +807,9 @@ on('chat:message', function(msg) {
       
       gmNotes = gmNotes.replace(/ -/g, '');
 
-      if (verboseMode) {
-         log("GM Notes: " + gmNotes);
-      }
+//      if (verboseMode) {
+         log("GM Notes: " + gmNotes.replace(/<BR>/g, ' '));
+//      }
 
       // ------------------------------------------
       // ----- start extracting attributes --------
@@ -850,13 +891,13 @@ on('chat:message', function(msg) {
          maxWounds = 1;
       }
       
-      if (/(Special Abilities):/.test(gmNotes.replace(/<BR>/g, ' '))) {
+      if (/(Special Abilities):?/.test(gmNotes.replace(/<BR>/g, ' '))) {
           showSpecAbilities = '1';
       }
           
       
 
-      if (/(Special Abilities):.*Undead/.test(gmNotes.replace(/<BR>/g, ' '))) {
+      if (/(Special Abilities):?.*Undead/.test(gmNotes.replace(/<BR>/g, ' '))) {
          toughnessMod += 2;
          toughnessModText += " undead";
          shakenMod += 2;
@@ -864,25 +905,26 @@ on('chat:message', function(msg) {
          woundPenaltyMod += 1;
          woundPenaltyModText += " undead";
       }
-      if (/(Special Abilities):.*Construct/.test(gmNotes.replace(/<BR>/g, ' '))) {
+      if (/(Special Abilities):?.*Construct/.test(gmNotes.replace(/<BR>/g, ' '))) {
+         log('Construct');
          shakenMod += 2;
          shakenModText += " construct";
          woundPenaltyMod += 1;
          woundPenaltyModText += " construct";
       }
-      if (/(Special Abilities):.*Elemental/.test(gmNotes.replace(/<BR>/g, ' '))) {
+      if (/(Special Abilities):?.*Elemental/.test(gmNotes.replace(/<BR>/g, ' '))) {
          woundPenaltyMod += 1;
          woundPenaltyModText += " Elemental";
       }
-      if (/(Special Abilities):.*Resilient/.test(gmNotes.replace(/<BR>/g, ' '))) {
+      if (/(Special Abilities):?.*Resilient/.test(gmNotes.replace(/<BR>/g, ' '))) {
          maxWounds = 2;
       }
-      if (/(Special Abilities):.*Very Resilient/.test(gmNotes.replace(/<BR>/g, ' '))) {
+      if (/(Special Abilities):?.*Very Resilient/.test(gmNotes.replace(/<BR>/g, ' '))) {
          maxWounds = 3;
       }
       //    Size 1  Size +1 
-      if (/Size\s+\+?-+(\d+)/.test(gmNotes.replace(/<BR>/g, ' '))) {
-         size = parseInt(gmNotes.replace(/<BR>/g, ' ').match(/Size\s+\+?-+(\d+)/)[0].match(/-?(\d+)/)[0]);
+      if (/Size:?\s?(\+|-)?(\d+)/.test(gmNotes.replace(/<BR>/g, ' '))) {
+         size = parseInt(gmNotes.replace(/<BR>/g, ' ').match(/Size:?\s?(\+|-)?(\d+)/)[0].match(/-?(\d+)/)[0]);
       }
       
       if (verboseMode) {
@@ -1210,6 +1252,94 @@ on('chat:message', function(msg) {
       }
       
       // Weapons / Gear  - ToDo
+      if(/(Gear):(.*\))/.test(gmNotes.replace(/<BR>/g, ' '))){
+          var FullGear = gmNotes.replace(/<BR>/g, ' ').match(/(?:Gear:?\s)(.*\))/g)[0].replace(/Gear:?\s?/g, '');
+          var GearList = [];
+          log(FullGear);
+          GearList = FullGear.split(")");
+          GearList.forEach((gear)=> {
+             log(gear);
+             if(gear.length > 4){
+                 if(/\d*\/\d*\/\d*/.test(gear)){
+                     if(/.*\(/g.test(gear)){
+                        var wName = gear.match(/.*\(/g)[0].replace(/\(/g, "").replace(/,/g, "").trim();    
+                     } else { var wName = ''; }
+                     
+                     if(/\d*\/\d*\/\d*/g.test(gear)){
+                        var wRange = gear.match(/\d*\/\d*\/\d*/g)[0];    
+                     } else { var wRange = ''; }
+                     
+                     if(/\d+d\d+\+?-?\d*/g.test(gear)){
+                        //log("here!"); log(gear.match(/\d+d\d+\+?-?\d*/g)[0].match(/(d)(\d*)/g)[0]); return;
+                        var wDmg            = gear.match(/\d+d\d+\+?-?\d*/g)[0]; 
+                        var wDmgDie         = gear.match(/\d+d\d+\+?-?\d*/g)[0].match(/(d)(\d*)/g)[0].match(/\d+/g)[0];
+                        var wDmgQty         = gear.match(/\d+d\d+\+?-?\d*/g)[0].match(/(\d*)(d)/g)[0].match(/\d+/g)[0];
+                        if(/(\+|-)(\d)/g.test(gear.match(/\d+d\d+\+?-?\d*/g)[0])){
+                          var wDmgBonusNum    = gear.match(/\d+d\d+\+?-?\d*/g)[0].match(/(\+|-)(\d)/g)[0].match(/\d*/g)[0];  
+                        } else { var wDmgBonusNum = ''; }
+                        
+                     } else { var wDmg = ''; }
+
+                     if(/shots\s?\d*/g.test(gear)){
+                        var wShots = gear.match(/shots\s?\d*/g)[0].match(/\d*/g)[0].replace(/shots\s?/,"");
+                     } else { wShots = ''; }
+                     
+                     if(/AP\s?\d*/g.test(gear)){
+                        var wAP = gear.match(/AP\s?\d*/g)[0].replace(/AP\s?/,"");    
+                     } else { wAP = ''; }
+                     
+                     if(/RoF\s?\d*/g.test(gear)){
+                        var wRoF = gear.match(/RoF\s?\d*/g)[0].match(/(RoF\s)(\d*)/g)[0].replace(/RoF\s?/,"");    
+                     } else { wRof = ''; }
+                     
+                     Weapons.push(new Weapon('Ranged', wName, '', '', wRange, wAP, wRoF, wShots, wShots, wDmgQty, wDmgDie, wDmgBonusNum));
+                     
+                 } else { 
+                     if(/.*\(/g.test(gear)){
+                        var wName = gear.match(/.*\(/g)[0].replace(/\(/g, "").replace(/,/g, "").trim();    
+                     } else { wName = ''; }
+                     
+                     if(/d{1}\d\+?\d*(\s|,|$)/g.test(gear)){
+                        //log("here!"); log(gear.match(/d{1}\d\+?\d*(\s|,|$)/g)[0]); return;
+                        var wDmg            = gear.match(/d{1}\d\+?\d*(\s|,|$)/g)[0]; 
+                        var wDmgDie         = gear.match(/d{1}\d\+?\d*(\s|,|$)/g)[0].match(/(d)(\d*)/g)[0].match(/\d+/g)[0];
+                        var wDmgQty         = '1';
+                        
+                        
+                        if(/(\+|-)(\d)/g.test(gear.match(/d{1}\d\+?\d*(\s|,|$)/g)[0])){
+                          var wDmgBonusNum    = gear.match(/d{1}\d\+?\d*(\s|,|$)/g)[0].match(/(\+|-)(\d)/g)[0].match(/\d+/g)[0];  
+                        } else { var wDmgBonusNum = ''; }
+                        
+                     } else { wDmg = ''; }
+                     
+                     if(/AP\s?\d*/g.test(gear)){
+                        var wAP = gear.match(/AP\s?\d*/g)[0].replace(/AP\s?/,"");    
+                     } else { wAP = ''; }
+                     
+                     var wRange = '';
+                     var wRoF = '';
+                     var wShots = '';
+                     
+                     Weapons.push(new Weapon('Melee', wName, '', '', wRange, wAP, wRoF, wShots, wShots, wDmgQty, wDmgDie, wDmgBonusNum))
+                 }
+             } 
+          })
+          
+          if (verboseMode) {
+             log('-----------Weapons----------');
+              Weapons.forEach((weapon)=> {
+                 log('-----------' + weapon.Name + '----------');
+                 log('Type: ' + weapon.Type);
+                 log('Range: ' + weapon.Range);
+                 log('DmgDieNum: ' + weapon.DmgDieNum)
+                 log('DmgDieType: ' + weapon.DmgDieType)
+                 log('DmgBonus: ' + weapon.DmgBonusNum)
+                 log('Shots: ' + weapon.Shots);
+                 log('AP: ' + weapon.AP);
+                 log('RoF: ' + weapon.RoF);
+              })
+          }
+      }
       
       
       //Powers - ToDo
@@ -1328,17 +1458,25 @@ on('chat:message', function(msg) {
             AddAttribute('showSpecAbilities', "1", null, charID);
        }
        
-
+       //Hindrances
        if(verboseMode){ log("Adding Hindrances"); }
        Hindrances.forEach((hindrance)=> {
              AddHindrance(hindrance, charID);
        })
        
+       //Edges
        if(verboseMode){ log("Adding Edges"); }
        Edges.forEach((edge)=> {
              AddEdge(edge, charID);
        })
-
+       
+       //Weapons
+       if(verboseMode){ log("Adding Weapons"); }
+       Weapons.forEach((weapon)=> {
+             AddWeapon(weapon, charID);
+       })
+       
+       
       //Calculated Fields and Mods:
       
       if(verboseMode){ log("Adding Calculated Fields / Mods"); }
@@ -1350,7 +1488,7 @@ on('chat:message', function(msg) {
       AddAttribute('stunned', '0', maxWounds, charID)
       AddAttribute('size', size, null, charID);
       AddAttribute('pace', pace, null, charID);
-      AddAttribute('paceCur', pace, null, charID);
+//      AddAttribute('paceCur', pace, null, charID);
 //      AddAttribute('parryCur', parry, null, charID);
 //      AddAttribute('toughnessCur', toughness, null, charID);
       AddAttribute('toughnessArmor', armor, null, charID);
@@ -1363,9 +1501,10 @@ on('chat:message', function(msg) {
       if(woundPenaltyMod < 0){ AddAttribute('increasewoundsby', Math.abs(woundPenaltyMod), null, charID); }
       
       //unshakemodtype
+      log(shakenMod);
       if(shakenMod != ""){
          AddAttribute('unshakemod', shakenMod, null, charID);
-         AddAttribute('unshakemodtype', shakenModText, null, charID);    
+         AddAttribute('unshakemodtype', shakenModText, null, charID);  
       }
       
       if(parryMod != ""){
@@ -1387,20 +1526,30 @@ on('chat:message', function(msg) {
       
       
 
-      if(typeof Skills.find(skill => skill.Name.toLowerCase() == 'fighting') !== 'undefined'){
-          if(verboseMode) { log('Found Fighting!'); }
+      
           
         _.delay((d)=>{
             sendChat('', '/w gm SW Stateblock pause to let Sheetworker catch up!');
-            log("Delayed Fix Fighing!");
-            FixFighting(charID);
+            log("Delayed Processing to wait for Sheetworker to catch up!");
+            if(typeof Skills.find(skill => skill.Name.toLowerCase() == 'fighting') !== 'undefined'){
+                if(verboseMode) { log('Found Fighting!'); }
+                FixFighting(charID);
+            }
+            Skills.forEach((skill)=> {
+              var skMod = '';
+              if(skill.Sign === '+') { 
+                  skMod = skill.Mod.toString() + ''; 
+              } else { 
+                  skMod = '-' + skill.Mod.toString(); 
+              }
+              log("skill: " + skill.Name + ", Die: " + skill.Die + ", skMod: " + skMod + ", Orig Mod: " + skill.Mod);
+           })
+            
+            
             sendChat('', '/w gm SW Statblock Import Complete');
             sendChat('', '/w gm Created: charName = [' + charName + '] Wild Card: = [' + wildCard + ']');
         },5000,charID);
-      } else {
-        sendChat('', '/w gm SW Statblock Import Complete');
-        sendChat('', '/w gm Created: charName = [' + charName + '] Wild Card: = [' + wildCard + ']');
-      }
+
 
         log('Async Done!');
       return;
