@@ -68,7 +68,7 @@
 //    const text = decodeEditorText(token.get('gmnotes'),{asArray:true});
 var verboseMode = true;
 
-log("-=> Savage Worlds SWADE Import v1.0.4 <=-");
+log("-=> Savage Worlds SWADE Import v1.0.5 <=-");
 
 const decodeEditorText = (t, o) => {
    let w = t;
