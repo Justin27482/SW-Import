@@ -68,7 +68,7 @@
 //    const text = decodeEditorText(token.get('gmnotes'),{asArray:true});
 var verboseMode = true;
 
-log("-=> Savage Worlds SWADE Import v1.0.5 <=-");
+log("-=> Savage Worlds SWADE Import v1.0.6 <=-");
 
 const decodeEditorText = (t, o) => {
    let w = t;
@@ -1360,7 +1360,15 @@ on('chat:message', function(msg) {
       EdgeList.forEach((EdgeObj)=> {
         var patt = new RegExp("(Edges):.*" + EdgeObj.name, "");
         if (patt.test(gmNotes.replace(/<BR>/g, ' '))) {
-            Edges.push(new Edge(EdgeObj.name, 'Creation', EdgeObj.desc));
+            if(EdgeObj.name == 'Quick'){
+                var patt2 = new RegExp("(Edges):.*Quick(?! Draw)");
+                if (patt2.test(gmNotes.replace(/<BR>/g, ' '))) {
+                    Edges.push(new Edge(EdgeObj.name, 'Creation', EdgeObj.desc));
+                }
+                    
+            } else {
+                Edges.push(new Edge(EdgeObj.name, 'Creation', EdgeObj.desc));    
+            }
         }
       })
       
