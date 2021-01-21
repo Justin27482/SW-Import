@@ -68,7 +68,7 @@
 //    const text = decodeEditorText(token.get('gmnotes'),{asArray:true});
 var verboseMode = true;
 
-log("-=> Savage Worlds SWADE Import v1.0.6 <=-");
+log("-=> Savage Worlds SWADE Import v1.0.8 <=-");
 
 const decodeEditorText = (t, o) => {
    let w = t;
@@ -179,7 +179,10 @@ function AdjustMod(type, name, amount, reason){
     
     switch(type.toLowerCase()){
       case 'attribute':
-            NewMod = Attribute.find(attribute => attribute.Name.toLowerCase() == name.toLowerCase()).Mod += amount;
+            //log('AdjustMod! Type:' + type + ' | Name: ' + name + ' | Amount: ' + amount + ' | Reason: ' + reason );
+            //log('ADJUSTMOD!!!!! - HERE!-------------------------------------------------------------------------------------');
+            //return;
+            NewMod = Attributes.find(attribute => attribute.Name.toLowerCase() == name.toLowerCase()).Mod += amount;
             if(NewMod < 0){
                 Attributes.find(attribute => attribute.Name.toLowerCase() == name.toLowerCase()).Mod = Math.abs(NewMod);
                 Attributes.find(attribute => attribute.Name == name.toLowerCase()).Sign = '-';    
@@ -1057,6 +1060,7 @@ var SpecialAbilityList = [];
         SpecialAbilityList.push({name:'Infection', desc:'A character Shaken or Wounded by a creature with Infection must make a Vigor roll.'});
         SpecialAbilityList.push({name:'Infravision', desc:'Nocturnal beasts often see in the infrared spectrum—meaning they can “see” by detecting heat.'});
         SpecialAbilityList.push({name:'Invulnerability', desc:'Some Savage Tales feature invulnerable horrors that can only be defeated by discovering their weakness.'});
+        SpecialAbilityList.push({name:'Illusion', desc:'A manitou can activate one illusion (per the power) as a free action once per turn. No roll required, as if a raise with Strong and Sound modifiers.  Can maintain as long as focus (-1 all other Trait rolls) is maintained.  May only have one illusion active at a time.'});
         SpecialAbilityList.push({name:'Low Light Vision', desc:'Low Light Vision ignores penalties for Dim and Dark Illumination (but not Pitch Darkness).'});
         SpecialAbilityList.push({name:'Paralysis', desc:'Victims who suffer damage or a Shaken result from such a creature must make a Vigor roll or be Stunned. They’re also paralyzed and incapable of any action— even speech—for 2d6 rounds (or longer if otherwise specified).'});
         SpecialAbilityList.push({name:'Poison', desc:'Snakes, spiders, and other creatures inject poisonous venom via bite or scratch. To do so, the thing must cause at least a Shaken result to the victim, who then makes a Vigor roll modified by the strength of the poison (listed in parentheses after the creature’s Poison ability). Effects of failure are described in more detail in the Hazards section (page 128).'});
@@ -1070,6 +1074,11 @@ var SpecialAbilityList = [];
         SpecialAbilityList.push({name:'Undead', desc:'Zombies, skeletons, and similar physical horrors are particularly difficult to destroy.'});
         SpecialAbilityList.push({name:'Wall Walker', desc:'Some creatures have the ability to walk on walls. They automatically walk on vertical or inverted surfaces just as a human walks on the earth.'});
         SpecialAbilityList.push({name:'Weakness', desc:'Some creatures suffer additional damage or can only be hurt by their Weakness.'});
+    }
+    
+    //Horror at Headstone Hill Special Abilities
+    {
+        SpecialAbilityList.push({name:'Replicant', desc:'+2 Toughness; Called Shots do no extra damage; Environmental Weakness (Fire); Fearless; Hardy; Mimic.'});
     }
 }
 // -----------------------------------  START ----------------------------
@@ -1088,6 +1097,7 @@ on('chat:message', function(msg) {
       Hindrances.length = 0;
       Edges.length = 0;
       Weapons.length = 0;
+      SpecialAbilities.length = 0;
       
       var paceMod = 0;
       var paceModText = '';
@@ -1315,7 +1325,26 @@ on('chat:message', function(msg) {
            } else { wDmg = ''; }
 
            Weapons.push(new Weapon('Melee', 'Bite', '', '', '', '', '', '', '', wDmgQty, wDmgDie, wDmgBonusNum))
-      }      
+      } 
+      
+      if(/\sBite\/Claws:\sStr\+(d\d*)/g.test(gmNotes.replace(/<BR>/g, ' '))){
+          var BiteText = gmNotes.replace(/<BR>/g, ' ').match(/\sBite\/Claws:\sStr\+(d\d*)/g);
+          
+          if(/d{1}\d\+?\d*(\s|,|$)/g.test(BiteText)){
+              
+              var wDmg            = BiteText.toString().match(/d{1}\d\+?\d*(\s|,|$)/g)[0]; 
+              var wDmgDie         = BiteText.toString().match(/d{1}\d\+?\d*(\s|,|$)/g)[0].match(/(d)(\d*)/g)[0].match(/\d+/g)[0];
+              var wDmgQty         = '1';
+              
+              if(/(\+|-)(\d)/g.test(BiteText.toString().match(/d{1}\d\+?\d*(\s|,|$)/g)[0])){
+                var wDmgBonusNum    = BiteText.toString().match(/d{1}\d\+?\d*(\s|,|$)/g)[0].match(/(\+|-)(\d)/g)[0].match(/\d+/g)[0];  
+              } else { var wDmgBonusNum = ''; }
+                    
+           } else { wDmg = ''; }
+
+           Weapons.push(new Weapon('Melee', 'Bite', '', '', '', '', '', '', '', wDmgQty, wDmgDie, wDmgBonusNum))
+           Weapons.push(new Weapon('Melee', 'Claws', '', '', '', '', '', '', '', wDmgQty, wDmgDie, wDmgBonusNum))
+      }
 
       if (/(Special Abilities):?.*Undead/.test(gmNotes.replace(/<BR>/g, ' '))) {
          toughnessMod += 2;
@@ -1324,6 +1353,12 @@ on('chat:message', function(msg) {
          shakenModText += " undead";
          woundPenaltyMod += 1;
          woundPenaltyModText += " undead";
+      }
+      if (/(Special Abilities):?.*Replicant/.test(gmNotes.replace(/<BR>/g, ' '))) {
+         toughnessMod += 2;
+         toughnessModText += " replicant";
+         
+         Edges.push(new Edge('Hardy', 'Creation', 'A second Shaken result does not cause a Wound'));
       }
       if (/(Special Abilities):?.*Construct/.test(gmNotes.replace(/<BR>/g, ' '))) {
          log('Construct');
